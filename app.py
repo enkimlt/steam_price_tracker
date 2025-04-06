@@ -5,16 +5,16 @@ import plotly.express as px
 import os
 from datetime import timedelta
 
-# Debug: List current directory and files
+# Debug filesystem
 print("Current working directory:", os.getcwd())
 print("List of files in current directory:", os.listdir("."))
 print("List of files in ./data:", os.listdir("./data"))
 
-# Load the CSV file
+# Lecture du fichier CSV
 df = pd.read_csv("data/prices.csv", parse_dates=["timestamp"])
 skins = df.columns[1:]
 
-# Initialize Dash app
+# App Dash
 app = dash.Dash(__name__)
 
 # Layout
@@ -56,7 +56,7 @@ app.layout = html.Div([
     )
 ])
 
-# Callbacks
+# Callback
 @app.callback(
     dash.dependencies.Output("global-graph", "figure"),
     dash.dependencies.Output("individual-graphs", "children"),
@@ -71,7 +71,7 @@ def update_graphs(selected_skins, period):
     else:
         filtered_df = df
 
-    # Global graph
+    # Graphique global
     if not selected_skins:
         fig_main = px.line(title="Aucune courbe sélectionnée.")
     else:
@@ -83,7 +83,7 @@ def update_graphs(selected_skins, period):
         else:
             fig_main.update_layout(height=600, width=1100)
 
-    # Individual graphs
+    # Graphiques individuels
     individual = []
     for skin in skins:
         fig = px.line(filtered_df, x="timestamp", y=skin, title=skin)
@@ -97,7 +97,7 @@ def update_graphs(selected_skins, period):
 
     return fig_main, individual
 
-# Run server (for Railway)
+# Exécution (Render/Railway compatible)
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
-    app.run_server(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port)
