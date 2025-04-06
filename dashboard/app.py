@@ -6,7 +6,7 @@ import os
 from datetime import timedelta
 
 # Charger les données
-df = pd.read_csv("/data/prices.csv", parse_dates=["timestamp"])
+df = pd.read_csv("../data/prices.csv", parse_dates=["timestamp"])
 skins = df.columns[1:]
 
 # App Dash
