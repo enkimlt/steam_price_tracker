@@ -6,7 +6,7 @@ import os
 from datetime import timedelta
 
 # Charger les données
-df = pd.read_csv("steam_price_tracker/data/prices.csv", parse_dates=["timestamp"])
+df = pd.read_csv("/data/prices.csv", parse_dates=["timestamp"])
 skins = df.columns[1:]
 
 # App Dash
@@ -47,7 +47,7 @@ app.layout = html.Div([
     html.Hr(),
     html.H2("📄 Rapport du jour"),
     html.Pre(
-        open("steam_price_tracker/data/report.txt").read() if os.path.exists("steam_price_tracker/data/report.txt") else "Aucun rapport généré."
+        open("/data/report.txt").read() if os.path.exists("/data/report.txt") else "Aucun rapport généré."
     )
 ])
 
