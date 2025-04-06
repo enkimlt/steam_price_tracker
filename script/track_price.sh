@@ -32,3 +32,4 @@ for key in "${ORDER[@]}"; do
 done
 
 echo "$LINE" >> "$OUTPUT"
+echo "DEBUG: script finished at $(date)" >> data/debug.log
