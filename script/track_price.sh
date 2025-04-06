@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OUTPUT="/data/prices.csv"
+OUTPUT="data/prices.csv"
 TIMESTAMP=$(date "+%Y-%m-%d %H:%M")
 
 declare -A SKINS
