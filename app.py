@@ -7,8 +7,11 @@ from datetime import timedelta
 
 # Charger les données
 
-DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "prices.csv")
-df = pd.read_csv(DATA_PATH, parse_dates=["timestamp"])
+print("Current working directory:", os.getcwd())
+print("List of files in current directory:", os.listdir("."))
+print("List of files in ./data:", os.listdir("./data"))
+
+df = pd.read_csv("data/prices.csv", parse_dates=["timestamp"])
 
 skins = df.columns[1:]
 
