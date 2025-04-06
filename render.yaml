@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: steam-price-dashboard
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python app.py"
+
+cron:
+  - name: track-prices-every-5min
+    schedule: "*/5 * * * *"
+    command: "bash script/track_price.sh"
+  - name: generate-daily-report
+    schedule: "0 20 * * *"
+    command: "python report.py"
