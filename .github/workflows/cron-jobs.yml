@@ -1,0 +1,41 @@
+name: Cron Jobs
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'    # Toutes les 5 minutes
+    - cron: '0 20 * * *'     # Tous les jours à 20h
+  workflow_dispatch:         # Permet de le déclencher manuellement aussi
+
+jobs:
+  run-tasks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run price tracking script
+        run: |
+          bash script/track_price.sh
+
+      - name: Generate daily report at 20h
+        if: ${{ github.event.schedule == '0 20 * * *' }}
+        run: |
+          bash generate_report.sh
+
+      - name: Push results (if changed)
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add data/prices.csv data/report.txt || true
+          git commit -m "Update prices and/or report" || echo "No changes to commit"
+          git push
