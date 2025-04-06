@@ -3,8 +3,8 @@ name: Cron Jobs
 on:
   schedule:
     - cron: '*/5 * * * *'    # Toutes les 5 minutes
-    - cron: '0 20 * * *'     # Tous les jours à 20h (UTC)
-  workflow_dispatch:         # Exécution manuelle possible
+    - cron: '0 20 * * *'     # Tous les jours à 20h
+  workflow_dispatch:         # Permet de le déclencher manuellement aussi
 
 jobs:
   run-tasks:
@@ -28,14 +28,16 @@ jobs:
           bash script/track_price.sh
 
       - name: Generate daily report at 20h
-        if: github.event.schedule == '0 20 * * *'
+        if: ${{ github.event.schedule == '0 20 * * *' }}
         run: |
-          bash script/generate_report.sh
+          bash generate_report.sh
 
       - name: Push results (if changed)
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
-          git add data/prices.csv data/report.txt || true
+          git add data/prices.csv || true
+          test -f data/report.txt && git add data/report.txt || true
           git commit -m "Update prices and/or report" || echo "No changes to commit"
+          git pull --rebase origin main || true
           git push || echo "No changes pushed"
