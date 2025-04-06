@@ -1,10 +1,10 @@
 {
   "build": {
     "env": {
-      "PYTHONUNBUFFERED": "1"
+      "PYTHONUNBUFFERED": "TRUE"
     }
   },
   "deploy": {
     "startCommand": "python app.py"
-  },
+  }
 }
