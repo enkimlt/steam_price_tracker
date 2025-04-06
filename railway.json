@@ -7,14 +7,4 @@
   "deploy": {
     "startCommand": "python app.py"
   },
-  "crons": [
-    {
-      "command": "bash script/track_price.sh",
-      "schedule": "*/5 * * * *"
-    },
-    {
-      "command": "bash script/generate_report.sh",
-      "schedule": "0 20 * * *"
-    }
-  ]
 }
