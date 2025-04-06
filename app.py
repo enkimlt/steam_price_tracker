@@ -5,17 +5,16 @@ import plotly.express as px
 import os
 from datetime import timedelta
 
-# Charger les données
-
+# Debug: List current directory and files
 print("Current working directory:", os.getcwd())
 print("List of files in current directory:", os.listdir("."))
 print("List of files in ./data:", os.listdir("./data"))
 
+# Load the CSV file
 df = pd.read_csv("data/prices.csv", parse_dates=["timestamp"])
-
 skins = df.columns[1:]
 
-# App Dash
+# Initialize Dash app
 app = dash.Dash(__name__)
 
 # Layout
@@ -53,11 +52,11 @@ app.layout = html.Div([
     html.Hr(),
     html.H2("📄 Rapport du jour"),
     html.Pre(
-        open("/data/report.txt").read() if os.path.exists("/data/report.txt") else "Aucun rapport généré."
+        open("data/report.txt").read() if os.path.exists("data/report.txt") else "Aucun rapport généré."
     )
 ])
 
-# Callback
+# Callbacks
 @app.callback(
     dash.dependencies.Output("global-graph", "figure"),
     dash.dependencies.Output("individual-graphs", "children"),
@@ -65,7 +64,6 @@ app.layout = html.Div([
     dash.dependencies.Input("period-selector", "value")
 )
 def update_graphs(selected_skins, period):
-    # Sélection des données selon la période
     now = df["timestamp"].max()
     if period != "ALL":
         days = int(period.replace("D", ""))
@@ -73,20 +71,19 @@ def update_graphs(selected_skins, period):
     else:
         filtered_df = df
 
-    # Graphique principal
+    # Global graph
     if not selected_skins:
         fig_main = px.line(title="Aucune courbe sélectionnée.")
     else:
         fig_main = px.line(filtered_df, x="timestamp", y=selected_skins, title="Prix des skins Desert Eagle")
         fig_main.update_layout(hovermode="x unified")
 
-        # Taille boostée
         if len(selected_skins) == 1:
             fig_main.update_layout(height=700, width=1200)
         else:
             fig_main.update_layout(height=600, width=1100)
 
-    # Graphiques individuels boostés
+    # Individual graphs
     individual = []
     for skin in skins:
         fig = px.line(filtered_df, x="timestamp", y=skin, title=skin)
@@ -100,6 +97,7 @@ def update_graphs(selected_skins, period):
 
     return fig_main, individual
 
-# Run
+# Run server (for Railway)
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 8080))
+    app.run_server(host="0.0.0.0", port=port)
