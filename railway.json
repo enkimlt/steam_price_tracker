@@ -5,7 +5,7 @@
     }
   },
   "deploy": {
-    "startCommand": "python dashboard/app.py"
+    "startCommand": "python app.py"
   },
   "crons": [
     {
