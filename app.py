@@ -10,7 +10,11 @@ print("Current working directory:", os.getcwd())
 print("List of files in current directory:", os.listdir("."))
 print("List of files in ./data:", os.listdir("./data"))
 
-df = pd.read_csv("data/prices.csv", parse_dates=["timestamp"])
+df = pd.read_csv("data/prices.csv")
+
+# ✅ Force la conversion correcte du timestamp
+df["timestamp"] = pd.to_datetime(df["timestamp"], errors="coerce")
+df = df.dropna(subset=["timestamp"])  # enlève les lignes corrompues
 
 skins = df.columns[1:]
 
@@ -64,10 +68,7 @@ app.layout = html.Div([
     dash.dependencies.Input("period-selector", "value")
 )
 def update_graphs(selected_skins, period):
-    # Se baser uniquement sur les lignes valides pour déterminer le "now"
-    valid_rows = df.dropna(subset=skins, how="all")
-    now = valid_rows["timestamp"].max()
-    now = pd.to_datetime(now)  # ✅ Fix ici pour éviter TypeError
+    now = df["timestamp"].max()
 
     if period != "ALL":
         days = int(period.replace("D", ""))
