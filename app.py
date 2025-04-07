@@ -10,8 +10,7 @@ print("Current working directory:", os.getcwd())
 print("List of files in current directory:", os.listdir("."))
 print("List of files in ./data:", os.listdir("./data"))
 
-df = pd.read_csv("data/prices.csv", parse_dates=["timestamp"])  # Chargement CSV
-df["timestamp"] = pd.to_datetime(df["timestamp"], errors="coerce")  # 🔧 Fix essentiel
+df = pd.read_csv("data/prices.csv", parse_dates=["timestamp"])
 
 skins = df.columns[1:]
 
@@ -65,13 +64,17 @@ app.layout = html.Div([
     dash.dependencies.Input("period-selector", "value")
 )
 def update_graphs(selected_skins, period):
-    now = df["timestamp"].max()
+    # Se baser uniquement sur les lignes valides pour déterminer le "now"
+    valid_rows = df.dropna(subset=skins, how="all")
+    now = valid_rows["timestamp"].max()
+
     if period != "ALL":
         days = int(period.replace("D", ""))
         filtered_df = df[df["timestamp"] >= now - timedelta(days=days)]
     else:
         filtered_df = df
 
+    # Graphique principal
     if not selected_skins:
         fig_main = px.line(title="Aucune courbe sélectionnée.")
     else:
@@ -83,6 +86,7 @@ def update_graphs(selected_skins, period):
         else:
             fig_main.update_layout(height=600, width=1100)
 
+    # Graphiques individuels
     individual = []
     for skin in skins:
         fig = px.line(filtered_df, x="timestamp", y=skin, title=skin)
@@ -96,6 +100,6 @@ def update_graphs(selected_skins, period):
 
     return fig_main, individual
 
-# Lancement de l'app
+# Run server
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=8080)
