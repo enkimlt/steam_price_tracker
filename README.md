@@ -1,5 +1,5 @@
 🧪 Steam Price Tracker
-Steam Price Tracker est un outil de suivi automatique des prix de cinq skins populaires de Desert Eagle sur le marché Steam. Il récupère les prix toutes les 5 minutes, les affiche sous forme de graphique et génère un rapport financier quotidien à 20h.
+Steam Price tracker est un outil de suivi automatique des prix de cinq skins populaires de Desert Eagle sur le marché Steam. Il récupère les prix toutes les 5 minutes, les affiche sous forme de graphique et génère un rapport financier quotidien à 20h.
 
 🔗 Lien vers l'application : steampricetracker-production.up.railway.app
 
