@@ -33,11 +33,13 @@ jobs:
           bash generate_report.sh
 
       - name: Push results (if changed)
+        env:
+          GITHUB_TOKEN: ${{ secrets.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 }}
         run: |
-          git config user.name "GitHub Action"
-          git config user.email "action@github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add data/prices.csv || true
           test -f data/report.txt && git add data/report.txt || true
           git commit -m "Update prices and/or report" || echo "No changes to commit"
           git pull --rebase origin main || true
-          git push || echo "No changes pushed"
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git || echo "No changes pushed"
