@@ -10,7 +10,8 @@ print("Current working directory:", os.getcwd())
 print("List of files in current directory:", os.listdir("."))
 print("List of files in ./data:", os.listdir("./data"))
 
-df = pd.read_csv("data/prices.csv", parse_dates=["timestamp"])  # ✅ parse_dates suffit
+df = pd.read_csv("data/prices.csv", parse_dates=["timestamp"])  # Chargement CSV
+df["timestamp"] = pd.to_datetime(df["timestamp"], errors="coerce")  # 🔧 Fix essentiel
 
 skins = df.columns[1:]
 
@@ -95,7 +96,6 @@ def update_graphs(selected_skins, period):
 
     return fig_main, individual
 
-# Run
-
+# Lancement de l'app
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=8080)
