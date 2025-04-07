@@ -1,7 +1,7 @@
 #!/bin/bash
 
 OUTPUT="data/prices.csv"
-TIMESTAMP=$(date "+%Y-%m-%d %H:%M")
+TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")  # ✅ Horodatage avec secondes
 
 declare -A SKINS
 SKINS["printstream"]="Desert%20Eagle%20%7C%20Printstream%20%28Factory%20New%29"
