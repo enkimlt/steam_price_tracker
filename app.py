@@ -10,15 +10,25 @@ print("Current working directory:", os.getcwd())
 print("List of files in current directory:", os.listdir("."))
 print("List of files in ./data:", os.listdir("./data"))
 
+# Lecture du CSV
 df = pd.read_csv("data/prices.csv")
 
-# ✅ Force la conversion correcte du timestamp
+# Conversion du timestamp en datetime
 df["timestamp"] = pd.to_datetime(df["timestamp"], errors="coerce")
-df = df.dropna(subset=["timestamp"])  # enlève les lignes corrompues
 
+# Nettoyage : suppression des lignes avec timestamps invalides
+df = df.dropna(subset=["timestamp"])
+
+# Tri par date croissante
+df = df.sort_values("timestamp")
+
+# Interpolation des valeurs manquantes
+df = df.fillna(method="ffill")
+
+# Liste des skins (toutes les colonnes sauf la première)
 skins = df.columns[1:]
 
-# App Dash
+# Création de l'application Dash
 app = dash.Dash(__name__)
 
 # Layout
@@ -60,7 +70,7 @@ app.layout = html.Div([
     )
 ])
 
-# Callback
+# Callback pour mise à jour des graphes
 @app.callback(
     dash.dependencies.Output("global-graph", "figure"),
     dash.dependencies.Output("individual-graphs", "children"),
@@ -69,7 +79,6 @@ app.layout = html.Div([
 )
 def update_graphs(selected_skins, period):
     now = df["timestamp"].max()
-
     if period != "ALL":
         days = int(period.replace("D", ""))
         filtered_df = df[df["timestamp"] >= now - timedelta(days=days)]
@@ -85,21 +94,3 @@ def update_graphs(selected_skins, period):
         if len(selected_skins) == 1:
             fig_main.update_layout(height=700, width=1200)
         else:
-            fig_main.update_layout(height=600, width=1100)
-
-    individual = []
-    for skin in skins:
-        fig = px.line(filtered_df, x="timestamp", y=skin, title=skin)
-        fig.update_layout(height=400, width=600)
-        individual.append(
-            html.Div([
-                html.H4(f"🎯 {skin}"),
-                dcc.Graph(figure=fig)
-            ])
-        )
-
-    return fig_main, individual
-
-# Run
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=8080)
