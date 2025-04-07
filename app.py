@@ -5,25 +5,20 @@ import plotly.express as px
 import os
 from datetime import timedelta
 
-# Chargement du CSV
+# Charger les données
 print("Current working directory:", os.getcwd())
 print("List of files in current directory:", os.listdir("."))
 print("List of files in ./data:", os.listdir("./data"))
 
 df = pd.read_csv("data/prices.csv")
+df["timestamp"] = pd.to_datetime(df["timestamp"], errors="coerce")  # ✅ Conversion sécurisée
 
-# Conversion explicite de la colonne timestamp
-df["timestamp"] = pd.to_datetime(df["timestamp"], format="%Y-%m-%d %H:%M")
-
-# Interpolation pour combler les trous
-df = df.set_index("timestamp").resample("1H").mean().interpolate().reset_index()
-
-# Récupération des noms de skins
 skins = df.columns[1:]
 
-# Création de l'app Dash
+# App Dash
 app = dash.Dash(__name__)
 
+# Layout
 app.layout = html.Div([
     html.H1("🔫 Suivi des prix Steam - Desert Eagle"),
 
@@ -62,7 +57,7 @@ app.layout = html.Div([
     )
 ])
 
-# Callback de mise à jour
+# Callback
 @app.callback(
     dash.dependencies.Output("global-graph", "figure"),
     dash.dependencies.Output("individual-graphs", "children"),
@@ -70,25 +65,24 @@ app.layout = html.Div([
     dash.dependencies.Input("period-selector", "value")
 )
 def update_graphs(selected_skins, period):
-    now = df["timestamp"].max()
+    filtered_df = df.dropna(subset=["timestamp"])  # ✅ Filtre les timestamps invalides
+    now = filtered_df["timestamp"].max()
+
     if period != "ALL":
         days = int(period.replace("D", ""))
-        filtered_df = df[df["timestamp"] >= now - timedelta(days=days)]
-    else:
-        filtered_df = df
+        filtered_df = filtered_df[filtered_df["timestamp"] >= now - timedelta(days=days)]
 
-    # Graphique principal
     if not selected_skins:
         fig_main = px.line(title="Aucune courbe sélectionnée.")
     else:
         fig_main = px.line(filtered_df, x="timestamp", y=selected_skins, title="Prix des skins Desert Eagle")
         fig_main.update_layout(hovermode="x unified")
+
         if len(selected_skins) == 1:
             fig_main.update_layout(height=700, width=1200)
         else:
             fig_main.update_layout(height=600, width=1100)
 
-    # Graphiques individuels
     individual = []
     for skin in skins:
         fig = px.line(filtered_df, x="timestamp", y=skin, title=skin)
@@ -102,6 +96,6 @@ def update_graphs(selected_skins, period):
 
     return fig_main, individual
 
-# Exécution
+# Run
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=8080)
