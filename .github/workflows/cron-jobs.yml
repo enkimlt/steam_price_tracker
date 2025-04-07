@@ -2,9 +2,9 @@ name: Cron Jobs
 
 on:
   schedule:
-    - cron: '*/5 * * * *'    # toutes les 5 minutes
-    - cron: '0 20 * * *'     # tous les jours à 20h
-  workflow_dispatch:         # pour le lancer manuellement
+    - cron: '*/5 * * * *'    # Toutes les 5 minutes (UTC)
+    - cron: '0 20 * * *'     # Tous les jours à 20h (UTC)
+  workflow_dispatch:         # Exécution manuelle possible
 
 jobs:
   run-tasks:
@@ -29,23 +29,14 @@ jobs:
         if: github.event.schedule == '0 20 * * *'
         run: bash generate_report.sh
 
-      - name: Commit and push if needed
+      - name: Push results (if changed)
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-          # Vérifie s'il y a eu des changements
-          git add data/
-          if ! git diff --cached --quiet; then
-            # Vérifie que le dernier commit n'est pas de GitHub Actions pour éviter une boucle
-            LAST_COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an')
-            if [ "$LAST_COMMIT_AUTHOR" != "github-actions[bot]" ]; then
-              git commit -m "Update data automatically"
-              git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
-            else
-              echo "Dernier commit vient déjà de GitHub Actions, on ne push pas pour éviter une boucle."
-            fi
-          else
-            echo "Aucun changement détecté, rien à push."
+          git pull --rebase origin main || true
+          git add data/prices.csv || true
+          test -f data/report.txt && git add data/report.txt || true
+          git commit -m "Update prices and/or report" || echo "No changes to commit"
+          git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git || echo "No changes pushed"
