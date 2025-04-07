@@ -67,6 +67,7 @@ def update_graphs(selected_skins, period):
     # Se baser uniquement sur les lignes valides pour déterminer le "now"
     valid_rows = df.dropna(subset=skins, how="all")
     now = valid_rows["timestamp"].max()
+    now = pd.to_datetime(now)  # ✅ Fix ici pour éviter TypeError
 
     if period != "ALL":
         days = int(period.replace("D", ""))
@@ -74,7 +75,6 @@ def update_graphs(selected_skins, period):
     else:
         filtered_df = df
 
-    # Graphique principal
     if not selected_skins:
         fig_main = px.line(title="Aucune courbe sélectionnée.")
     else:
@@ -86,7 +86,6 @@ def update_graphs(selected_skins, period):
         else:
             fig_main.update_layout(height=600, width=1100)
 
-    # Graphiques individuels
     individual = []
     for skin in skins:
         fig = px.line(filtered_df, x="timestamp", y=skin, title=skin)
@@ -100,6 +99,6 @@ def update_graphs(selected_skins, period):
 
     return fig_main, individual
 
-# Run server
+# Run
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=8080)
