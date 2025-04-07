@@ -5,16 +5,20 @@ import plotly.express as px
 import os
 from datetime import timedelta
 
-# Chargement des données
+# Charger les données
 print("Current working directory:", os.getcwd())
 print("List of files in current directory:", os.listdir("."))
 print("List of files in ./data:", os.listdir("./data"))
 
-df = pd.read_csv("data/prices.csv", parse_dates=["timestamp"])  # <-- conversion auto ici
+df = pd.read_csv("data/prices.csv", parse_dates=["timestamp"])
+df["timestamp"] = pd.to_datetime(df["timestamp"])  # <- 🔧 Fix essentiel
+
 skins = df.columns[1:]
 
+# App Dash
 app = dash.Dash(__name__)
 
+# Layout
 app.layout = html.Div([
     html.H1("🔫 Suivi des prix Steam - Desert Eagle"),
 
@@ -53,6 +57,7 @@ app.layout = html.Div([
     )
 ])
 
+# Callback
 @app.callback(
     dash.dependencies.Output("global-graph", "figure"),
     dash.dependencies.Output("individual-graphs", "children"),
@@ -60,8 +65,7 @@ app.layout = html.Div([
     dash.dependencies.Input("period-selector", "value")
 )
 def update_graphs(selected_skins, period):
-    now = pd.to_datetime(df["timestamp"].max())  # ✅ Correction ici : cast explicite en datetime
-
+    now = df["timestamp"].max()
     if period != "ALL":
         days = int(period.replace("D", ""))
         filtered_df = df[df["timestamp"] >= now - timedelta(days=days)]
@@ -92,5 +96,6 @@ def update_graphs(selected_skins, period):
 
     return fig_main, individual
 
+# Run
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=8080)
+    app.run(debug=True)
