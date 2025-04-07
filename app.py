@@ -10,8 +10,7 @@ print("Current working directory:", os.getcwd())
 print("List of files in current directory:", os.listdir("."))
 print("List of files in ./data:", os.listdir("./data"))
 
-df = pd.read_csv("data/prices.csv", parse_dates=["timestamp"])
-df["timestamp"] = pd.to_datetime(df["timestamp"])  # <- 🔧 Fix essentiel
+df = pd.read_csv("data/prices.csv", parse_dates=["timestamp"])  # ✅ parse_dates suffit
 
 skins = df.columns[1:]
 
