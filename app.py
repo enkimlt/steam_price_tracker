@@ -5,20 +5,25 @@ import plotly.express as px
 import os
 from datetime import timedelta
 
-# Charger les données
+# 📁 Vérification du contenu
 print("Current working directory:", os.getcwd())
 print("List of files in current directory:", os.listdir("."))
 print("List of files in ./data:", os.listdir("./data"))
 
-df = pd.read_csv("data/prices.csv")
-df["timestamp"] = pd.to_datetime(df["timestamp"], errors="coerce")  # ✅ Conversion sécurisée
+# 📊 Chargement des données
+df = pd.read_csv("data/prices.csv", parse_dates=["timestamp"])
+
+# 🔧 Correction des types : forcer les colonnes de skins à float
+for skin in df.columns[1:]:
+    df[skin] = pd.to_numeric(df[skin], errors="coerce")
 
 skins = df.columns[1:]
 
-# App Dash
+# 🚀 App Dash
 app = dash.Dash(__name__)
+server = app.server  # pour déploiement
 
-# Layout
+# 📋 Layout
 app.layout = html.Div([
     html.H1("🔫 Suivi des prix Steam - Desert Eagle"),
 
@@ -57,7 +62,7 @@ app.layout = html.Div([
     )
 ])
 
-# Callback
+# 🔁 Callback
 @app.callback(
     dash.dependencies.Output("global-graph", "figure"),
     dash.dependencies.Output("individual-graphs", "children"),
@@ -65,12 +70,16 @@ app.layout = html.Div([
     dash.dependencies.Input("period-selector", "value")
 )
 def update_graphs(selected_skins, period):
-    filtered_df = df.dropna(subset=["timestamp"])  # ✅ Filtre les timestamps invalides
-    now = filtered_df["timestamp"].max()
+    # Assure que timestamp est bien datetime
+    df["timestamp"] = pd.to_datetime(df["timestamp"], errors="coerce")
+
+    now = df["timestamp"].max()
 
     if period != "ALL":
         days = int(period.replace("D", ""))
-        filtered_df = filtered_df[filtered_df["timestamp"] >= now - timedelta(days=days)]
+        filtered_df = df[df["timestamp"] >= now - timedelta(days=days)]
+    else:
+        filtered_df = df
 
     if not selected_skins:
         fig_main = px.line(title="Aucune courbe sélectionnée.")
@@ -96,6 +105,6 @@ def update_graphs(selected_skins, period):
 
     return fig_main, individual
 
-# Run
+# ▶️ Lancement
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=8080)
