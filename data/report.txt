@@ -1,7 +1,31 @@
-📈 Rapport quotidien - 2025-04-07
------------------------------
-printstream : min €107.83 / max €114.81 / moyenne €111.72
-cobalt : min €N/A / max €88.20 / moyenne €52.26
-hypnotic : min €N/A / max €110.98 / moyenne €107.76
-kumicho : min €N/A / max €37.16 / moyenne €36.61
-blaze : min €N/A / max €847.25 / moyenne €491.16
+🗓 Rapport financier du jour - 2025-04-07
+
+🔫 printstream
+  - Prix ouverture : 111.47€
+  - Prix clôture   : 110.77€
+  - Évolution      : -0.63%
+  - Volatilité     : 1.7598
+
+🔫 blaze
+  - Prix ouverture : 847.25€
+  - Prix clôture   : 853.27€
+  - Évolution      : 0.71%
+  - Volatilité     : 2.3957
+
+🔫 cobalt
+  - Prix ouverture : 87.77€
+  - Prix clôture   : 86.29€
+  - Évolution      : -1.69%
+  - Volatilité     : 0.5725
+
+🔫 hypnotic
+  - Prix ouverture : 110.98€
+  - Prix clôture   : 110.36€
+  - Évolution      : -0.56%
+  - Volatilité     : 0.2205
+
+🔫 kumicho
+  - Prix ouverture : 37.16€
+  - Prix clôture   : 37.38€
+  - Évolution      : 0.59%
+  - Volatilité     : 0.1430
