@@ -1,7 +1,7 @@
-📈 Rapport quotidien - 2025-05-20
+📈 Rapport quotidien - 2025-05-21
 -----------------------------
-printstream : min €N/A / max €117.13 / moyenne €95.21
-cobalt : min €88.78 / max €94.18 / moyenne €91.30
-hypnotic : min €N/A / max €114.77 / moyenne €107.67
-kumicho : min €N/A / max €44.43 / moyenne €41.13
-blaze : min €N/A / max €923.92 / moyenne €535.85
+printstream : min €N/A / max €113.56 / moyenne €109.13
+cobalt : min €N/A / max €94.18 / moyenne €90.29
+hypnotic : min €N/A / max €111.04 / moyenne €107.92
+kumicho : min €N/A / max €43.42 / moyenne €41.61
+blaze : min €N/A / max €876.43 / moyenne €600.52
