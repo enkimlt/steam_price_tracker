@@ -1,7 +1,7 @@
-📈 Rapport quotidien - 2026-11-08
+📈 Rapport quotidien - 2026-11-10
 -----------------------------
-printstream : min €73.78 / max €73.78 / moyenne €73.78
-cobalt : min €86.11 / max €89.70 / moyenne €87.48
-hypnotic : min €148.21 / max €148.21 / moyenne €148.21
-kumicho : min €62.91 / max €62.91 / moyenne €62.91
-blaze : min €677.31 / max €679.09 / moyenne €678.73
+printstream : min €72.87 / max €72.87 / moyenne €72.87
+cobalt : min €85.-- / max €85.-- / moyenne €85.00
+hypnotic : min €144.-- / max €144.-- / moyenne €144.00
+kumicho : min €60.-- / max €60.-- / moyenne €60.00
+blaze : min €675.-- / max €675.-- / moyenne €675.00
